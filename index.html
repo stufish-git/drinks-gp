@@ -178,8 +178,9 @@
           <option value="200">200ml Miniature</option>
         </optgroup>
         <optgroup label="── Beer / Cider ──">
-          <option value="330">330ml Can/Bottle</option>
-          <option value="440">440ml Can</option>
+          <option value="330">Single Can/Bottle</option>
+          <option value="7920">24 x Can/Bottle</option>
+          <option value="3960">12 x Can/Bottle</option>
         </optgroup>
         <optgroup label="── Custom ──">
           <option value="custom">Custom size…</option>
@@ -367,14 +368,27 @@
 
 <script>
 var vatMode = 'ex';
-var PL = {50000:'50L Keg',30000:'30L Keg',20000:'20L Keg',11000:'11L Mini Keg',750:'750ml Bottle',1500:'1.5L Magnum',3000:'3L Jeroboam',375:'375ml Half Bottle',700:'700ml Bottle',1000:'1L Bottle',1750:'1.75L Handle',500:'500ml Bottle',200:'200ml Mini',330:'330ml Can/Bottle',440:'440ml Can'};
+var PL = {50000:'50L Keg',30000:'30L Keg',20000:'20L Keg',11000:'11L Mini Keg',750:'750ml Bottle',1500:'1.5L Magnum',3000:'3L Jeroboam',375:'375ml Half Bottle',700:'700ml Bottle',1000:'1L Bottle',1750:'1.75L Handle',500:'500ml Bottle',200:'200ml Mini',330:'Single Can/Bottle',7920:'24 x Can/Bottle',3960:'12 x Can/Bottle'};
 var SL = {568:'Pint',284:'Half Pint',330:'330ml',440:'440ml Can',500:'500ml',175:'175ml Glass',250:'250ml Glass',125:'125ml Glass',750:'750ml Bottle',25:'25ml Shot',35:'35ml Shot',50:'50ml Double',70:'70ml Double',700:'700ml Bottle'};
 
 function gv(id){ return document.getElementById(id); }
 function getVr(){ return (parseFloat(gv('vat-rate').value)||0)/100; }
-function getPml(){ var v=gv('purchase-size').value; return v==='custom'?parseFloat(gv('custom-p-ml').value)||0:parseFloat(v)||0; }
+function getPml(){
+  var v=gv('purchase-size').value;
+  if(v==='custom') return parseFloat(gv('custom-p-ml').value)||0;
+  if(v==='7920') return (parseFloat(gv('custom-p-ml').value)||330)*24;
+  if(v==='3960') return (parseFloat(gv('custom-p-ml').value)||330)*12;
+  return parseFloat(v)||0;
+}
 function getSml(){ var v=gv('sell-size').value; return v==='custom'?parseFloat(gv('custom-s-ml').value)||0:parseFloat(v)||0; }
-function getPlbl(){ var v=gv('purchase-size').value; return v==='custom'?(gv('custom-p-ml').value||'?')+'ml':PL[v]||v+'ml'; }
+function getPlbl(){
+  var v=gv('purchase-size').value;
+  var canMl=parseFloat(gv('custom-p-ml').value)||330;
+  if(v==='custom') return (gv('custom-p-ml').value||'?')+'ml';
+  if(v==='7920') return '24 x '+canMl+'ml Can/Bottle';
+  if(v==='3960') return '12 x '+canMl+'ml Can/Bottle';
+  return PL[v]||v+'ml';
+}
 function getSlbl(){ var v=gv('sell-size').value; return v==='custom'?(gv('custom-s-ml').value||'?')+'ml':SL[v]||v+'ml'; }
 function fmt(n,d){ d=d||2; return '£'+(isNaN(n)||!isFinite(n)?'0.00':n.toFixed(d)); }
 
@@ -415,19 +429,22 @@ function calc(){
   } else { crow.style.display='none'; }
 
   var agp=priceEx>0&&cps>0?(priceEx-cps)/priceEx*100:0;
+  var agpR=Math.round(agp*10)/10;
+  var gptR=Math.round(gpt*10)/10;
+  var met=agpR>=gptR;
   var clamp=Math.max(0,Math.min(100,agp));
   var bf=gv('bar-fill');
   bf.style.width=clamp+'%';
-  bf.style.background=agp>=gpt?'linear-gradient(90deg,#16a34a,#4ade80)':'linear-gradient(90deg,#dc2626,#f87171)';
+  bf.style.background=met?'linear-gradient(90deg,#16a34a,#4ade80)':'linear-gradient(90deg,#dc2626,#f87171)';
   gv('bar-tgt').style.left=Math.min(gpt,100)+'%';
   gv('tgt-lbl').textContent='▲ '+gpt.toFixed(1)+'% target';
   var bp=gv('bar-pct');
   bp.textContent=agp.toFixed(1)+'%';
-  bp.style.color=agp>=gpt?'var(--green)':entered>0?'var(--red)':'var(--text-dim)';
+  bp.style.color=met?'var(--green)':entered>0?'var(--red)':'var(--text-dim)';
   var sp=gv('spill');
   if(!entered){ sp.textContent='Enter a price above to check your GP'; sp.className='spill neutral'; }
-  else if(agp>=gpt){ sp.textContent='✅ Target met — '+(agp-gpt).toFixed(1)+'% above target'; sp.className='spill good'; }
-  else { sp.textContent='❌ Below target — '+(gpt-agp).toFixed(1)+'% short'; sp.className='spill bad'; }
+  else if(met){ sp.textContent='✅ Target met — '+(agpR-gptR).toFixed(1)+'% above target'; sp.className='spill good'; }
+  else { sp.textContent='❌ Below target — '+(gptR-agpR).toFixed(1)+'% short'; sp.className='spill bad'; }
 }
 
 function doPrint(){
@@ -446,6 +463,9 @@ function doPrint(){
   var priceEx=vatMode==='inc'?entered/(1+vr):entered;
   var priceInc=vatMode==='inc'?entered:entered*(1+vr);
   var agp=priceEx>0&&cps>0?(priceEx-cps)/priceEx*100:0;
+  var agpR=Math.round(agp*10)/10;
+  var gptR=Math.round(gpt*10)/10;
+  var met=agpR>=gptR;
   var date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 
   gv('ps-meta').innerHTML='Date: '+date+'<br>Target GP: '+gpt.toFixed(1)+'%&nbsp;&nbsp;|&nbsp;&nbsp;VAT: '+vatPct+'%';
@@ -469,13 +489,13 @@ function doPrint(){
       :'<tr><td>Inc VAT equivalent</td><td>'+fmt(priceInc)+'</td></tr>';
     rows+='<tr><td>Actual GP %</td><td>'+agp.toFixed(1)+'%</td></tr>'+
           '<tr><td>Target GP %</td><td>'+gpt.toFixed(1)+'%</td></tr>'+
-          '<tr><td>Variance</td><td>'+(agp>=gpt?'+':'')+( agp-gpt).toFixed(1)+'%</td></tr>';
+          '<tr><td>Variance</td><td>'+(met?'+':'')+( agpR-gptR).toFixed(1)+'%</td></tr>';
   }
   gv('ps-checker').innerHTML=rows;
 
   var st=gv('ps-status');
   if(!entered){ st.textContent='No price entered'; st.className='ps-status na'; }
-  else if(agp>=gpt){ st.textContent='✅ Target met — '+(agp-gpt).toFixed(1)+'% above target'; st.className='ps-status good'; }
+  else if(met){ st.textContent='✅ Target met — '+(agpR-gptR).toFixed(1)+'% above target'; st.className='ps-status good'; }
   else { st.textContent='❌ Below target — '+(gpt-agp).toFixed(1)+'% short'; st.className='ps-status bad'; }
 
   window.print();
@@ -513,7 +533,22 @@ sl.addEventListener('input', function(){
 });
 sl.style.setProperty('--pct',((parseFloat(sl.value)-10)/85*100).toFixed(1)+'%');
 
-gv('purchase-size').addEventListener('change', function(){ gv('cp-row').classList.toggle('on',this.value==='custom'); calc(); });
+gv('purchase-size').addEventListener('change', function(){
+  var v = this.value;
+  var row = gv('cp-row');
+  var lbl = row.querySelector('label');
+  if(v === 'custom'){
+    lbl.textContent = 'Custom size (ml)';
+    row.classList.add('on');
+  } else if(v === '7920' || v === '3960'){
+    lbl.textContent = 'Can/bottle size (ml)';
+    gv('custom-p-ml').value = 330;
+    row.classList.add('on');
+  } else {
+    row.classList.remove('on');
+  }
+  calc();
+});
 gv('sell-size').addEventListener('change', function(){ gv('cs-row').classList.toggle('on',this.value==='custom'); calc(); });
 ['cost-price','actual-price','custom-p-ml','custom-s-ml','drink-name','vat-rate'].forEach(function(id){
   gv(id).addEventListener('input', calc);
