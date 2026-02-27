@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#0f0e17"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="GP Calc"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
+  <title>Drinks GP Calculator</title>
+  <link rel="manifest" href="manifest.json"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#0f0e17;--surface:#1a1826;--gold:#e8a838;--gold-light:#f5c96a;--green:#4ade80;--green-dim:rgba(74,222,128,0.1);--red:#f87171;--red-dim:rgba(248,113,113,0.1);--text:#f0ece4;--text-dim:#7a7590;--border:rgba(255,255,255,0.06);--border-gold:rgba(232,168,56,0.22);--radius:18px;--radius-sm:12px;}
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overscroll-behavior:none;}
+    .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(70px);}
+    .b1{top:-10%;left:-10%;width:55vw;height:55vw;background:radial-gradient(circle,rgba(232,168,56,0.07),transparent 70%);}
+    .b2{bottom:-15%;right:-10%;width:65vw;height:65vw;background:radial-gradient(circle,rgba(100,60,180,0.06),transparent 70%);}
+    .app{position:relative;z-index:1;max-width:480px;margin:0 auto;min-height:100dvh;padding-bottom:48px;}
+    header{padding:52px 20px 16px;}
+    .eyebrow{font-size:10px;font-weight:600;letter-spacing:3.5px;text-transform:uppercase;color:var(--gold);opacity:.75;margin-bottom:8px;}
+    h1{font-family:'Playfair Display',serif;font-size:34px;font-weight:900;line-height:1.05;background:linear-gradient(135deg,#f5c96a 0%,#e8a838 60%,#c07820 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .header-sub{font-size:13px;color:var(--text-dim);margin-top:7px;font-weight:300;font-style:italic;}
+    .sec-lbl{margin:18px 16px 8px;font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);display:flex;align-items:center;gap:8px;}
+    .sec-lbl::after{content:'';flex:1;height:1px;background:var(--border);}
+    .card{margin:0 16px 8px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:visible;}
+    .field{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+    .field:last-child{border-bottom:none;}
+    .fi{flex:1;min-width:0;}.fl{font-size:14px;font-weight:500;color:var(--text);}.fh{font-size:11px;color:var(--text-dim);margin-top:2px;}
+    .sel-wrap{position:relative;min-width:158px;}
+    .csel{width:100%;appearance:none;-webkit-appearance:none;background:rgba(255,255,255,0.05);border:1px solid var(--border-gold);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:11px 36px 11px 14px;cursor:pointer;outline:none;transition:border-color .2s,box-shadow .2s;}
+    .csel:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,168,56,.15);}
+    .csel option{background:#1a1826;color:var(--text);}.csel optgroup{color:var(--gold);font-style:normal;background:#0f0e17;}
+    .sarr{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none;font-size:10px;}
+    .num-wrap{display:flex;align-items:center;background:rgba(255,255,255,0.05);border:1px solid var(--border-gold);border-radius:var(--radius-sm);overflow:hidden;min-width:115px;transition:border-color .2s,box-shadow .2s;}
+    .num-wrap:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,168,56,.15);}
+    .pfx,.sfx{padding:0 10px;font-size:13px;color:var(--gold);font-weight:700;background:rgba(232,168,56,.08);align-self:stretch;display:flex;align-items:center;}
+    input[type="number"]{background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;width:72px;padding:11px 8px;text-align:right;-moz-appearance:textfield;}
+    input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+    input[type="text"]{background:rgba(255,255,255,0.05);border:1px solid var(--border-gold);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;padding:11px 14px;width:145px;outline:none;transition:border-color .2s,box-shadow .2s;}
+    input[type="text"]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,168,56,.15);}
+    .cml-row{padding:0 18px 14px;display:none;align-items:center;gap:10px;}.cml-row.on{display:flex;}.cml-row label{font-size:12px;color:var(--text-dim);flex:1;}
+    .sl-field{padding:16px 18px 20px;}.sl-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;}
+    .sl-lbl{font-size:14px;font-weight:500;}.sl-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--gold);}
+    input[type="range"]{-webkit-appearance:none;width:100%;height:5px;border-radius:3px;background:linear-gradient(90deg,var(--gold) 0%,var(--gold) var(--pct,63%),rgba(255,255,255,.1) var(--pct,63%));outline:none;cursor:pointer;}
+    input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(232,168,56,.2),0 2px 8px rgba(0,0,0,.4);cursor:pointer;}
+    input[type="range"]:active::-webkit-slider-thumb{box-shadow:0 0 0 8px rgba(232,168,56,.25),0 2px 8px rgba(0,0,0,.4);}
+    .sl-ticks{display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-dim);}
+    .rh{margin:0 16px 8px;background:linear-gradient(145deg,#1c1929,#140f20);border-radius:var(--radius);border:1px solid var(--border-gold);overflow:hidden;position:relative;}
+    .rh::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at 50% -20%,rgba(232,168,56,.1),transparent 60%);pointer-events:none;}
+    .rh-inner{padding:26px 24px 20px;text-align:center;position:relative;}
+    .rh-drink{font-size:11px;color:var(--gold);opacity:.6;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;}
+    .rh-eq{font-size:12px;color:var(--text-dim);margin-bottom:14px;font-style:italic;}
+    .rh-lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:5px;}
+    .rh-price{font-family:'Playfair Display',serif;font-size:58px;font-weight:900;color:var(--gold-light);line-height:1;}
+    .rh-ex{font-size:12px;color:var(--text-dim);margin-top:4px;}
+    .rh-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--border);}
+    .rh-cell{padding:14px 10px;text-align:center;border-right:1px solid var(--border);}.rh-cell:last-child{border-right:none;}
+    .rh-cl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-dim);margin-bottom:5px;}.rh-cv{font-size:15px;font-weight:700;}
+    .rh-cv.gold{color:var(--gold);}.rh-cv.green{color:var(--green);}
+    .ck{margin:0 16px 8px;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+    .vat-toggle{display:flex;align-items:center;background:rgba(255,255,255,0.05);border:1px solid var(--border-gold);border-radius:var(--radius-sm);overflow:hidden;}
+    .vat-toggle button{background:transparent;border:none;color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;padding:8px 14px;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap;}
+    .vat-toggle button.active{background:var(--gold);color:#1a1a2e;}
+    .bar-wrap{padding:4px 18px 18px;}.bar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+    .bar-lbl{font-size:12px;color:var(--text-dim);}.bar-pct{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;transition:color .3s;}
+    .bar-track{height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden;position:relative;}
+    .bar-fill{height:100%;border-radius:5px;transition:width .5s cubic-bezier(.34,1.56,.64,1),background .3s;}
+    .bar-target{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--gold);border-radius:1px;transition:left .3s;}
+    .bar-lbls{display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);margin-top:6px;}
+    .spill{margin:0 18px 18px;padding:13px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;text-align:center;transition:all .3s;border:1px solid transparent;}
+    .spill.good{background:var(--green-dim);color:var(--green);border-color:rgba(74,222,128,.2);}
+    .spill.bad{background:var(--red-dim);color:var(--red);border-color:rgba(248,113,113,.2);}
+    .spill.neutral{background:rgba(255,255,255,.04);color:var(--text-dim);border-color:var(--border);}
+    /* Print button */
+    .print-btn{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 16px 4px;padding:15px 20px;background:linear-gradient(135deg,rgba(232,168,56,0.15),rgba(232,168,56,0.05));border:1px solid var(--border-gold);border-radius:var(--radius);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;width:calc(100% - 32px);transition:background .2s,box-shadow .2s;text-align:center;}
+    .print-btn:active{background:linear-gradient(135deg,rgba(232,168,56,0.3),rgba(232,168,56,0.15));}
+    /* Settings */
+    .settings-wrap{margin:8px 16px 8px;}
+    .settings-toggle{display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px 0;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);border:none;background:none;width:100%;}
+    .settings-toggle::before{content:'⚙';font-size:14px;}
+    .settings-toggle::after{content:'';flex:1;height:1px;background:var(--border);}
+    .settings-arr{font-size:9px;transition:transform .25s;margin-left:4px;}
+    .settings-toggle.open .settings-arr{transform:rotate(180deg);}
+    .settings-body{display:none;background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+    .settings-body.open{display:block;}
+    .settings-row{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+    .settings-row:last-child{border-bottom:none;}
+    .settings-note{padding:12px 18px;font-size:11px;color:var(--text-dim);font-style:italic;line-height:1.5;}
+    #ios-hint{margin:0 16px 12px;padding:14px 18px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;color:var(--text-dim);line-height:1.7;display:none;}
+    #ios-hint strong{color:var(--gold);}
+    footer{text-align:center;padding:24px 16px 16px;font-size:11px;color:var(--text-dim);opacity:.4;line-height:1.8;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+    .a{animation:fadeUp .45s ease both;}
+    header{animation:fadeUp .4s ease .05s both;}
+
+    /* ── PRINT STYLES ── */
+    @media print {
+      @page { margin: 15mm 12mm; size: A4; }
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      html, body { background: #fff !important; min-height: 0 !important; height: auto !important; }
+      .blob, .app { display: none !important; }
+      #print-sheet { display: block !important; }
+    }
+    #print-sheet { display: none; }
+    #ps-inner { font-family: Georgia, serif; color: #1a1a1a; max-width: 180mm; margin: 0 auto; }
+    .ps-hdr { border-bottom: 3px solid #c07820; padding-bottom: 10px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .ps-title { font-size: 24px; font-weight: 700; color: #c07820; font-family: Georgia, serif; }
+    .ps-sub { font-size: 10px; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+    .ps-meta { font-size: 10px; color: #888; text-align: right; line-height: 1.6; }
+    .ps-name { font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 3px; }
+    .ps-eq { font-size: 12px; color: #888; font-style: italic; margin-bottom: 20px; }
+    .ps-sec { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #c07820; border-bottom: 1px solid #e8d5b0; padding-bottom: 4px; margin: 18px 0 10px; }
+    .ps-tbl { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+    .ps-tbl td { padding: 8px 10px; font-size: 13px; border-bottom: 1px solid #f5f0e8; }
+    .ps-tbl td:first-child { color: #555; width: 55%; }
+    .ps-tbl td:last-child { font-weight: 700; text-align: right; }
+    .ps-hero { background: #fdf8f0; border: 2px solid #e8a838; border-radius: 8px; padding: 16px 20px; text-align: center; margin: 14px 0; }
+    .ps-hero-lbl { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 4px; }
+    .ps-hero-price { font-size: 44px; font-weight: 700; color: #c07820; font-family: Georgia, serif; line-height: 1; }
+    .ps-hero-sub { font-size: 12px; color: #888; margin-top: 4px; }
+    .ps-3col { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 12px 0; }
+    .ps-3cell { background: #f8f6f2; border-radius: 6px; padding: 12px; text-align: center; border: 1px solid #e8d5b0; }
+    .ps-3lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 4px; }
+    .ps-3val { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+    .ps-status { padding: 10px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; text-align: center; margin: 10px 0; }
+    .ps-status.good { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .ps-status.bad  { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    .ps-status.na   { background: #f8f8f8; color: #888; border: 1px solid #e5e5e5; }
+    .ps-ftr { margin-top: 24px; padding-top: 10px; border-top: 1px solid #e8d5b0; display: flex; justify-content: space-between; font-size: 9px; color: #aaa; }
+  </style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div>
+<div class="app">
+
+<header>
+  <div class="eyebrow">Hospitality Tools</div>
+  <h1>Drinks GP<br>Calculator</h1>
+  <p class="header-sub">Kegs, bottles, glasses — every serve, every margin.</p>
+</header>
+
+<div id="ios-hint">📲 <strong>Save to Home Screen:</strong> tap <strong>Share</strong> in Safari then <strong>"Add to Home Screen"</strong>.</div>
+
+<!-- PURCHASE -->
+<div class="sec-lbl a" style="animation-delay:.1s">📦 &nbsp;Purchase</div>
+<div class="card a" style="animation-delay:.12s">
+  <div class="field">
+    <div class="fi"><div class="fl">Drink name</div></div>
+    <input type="text" id="drink-name" value="House Red Wine"/>
+  </div>
+  <div class="field">
+    <div class="fi"><div class="fl">Container</div><div class="fh">What you buy</div></div>
+    <div class="sel-wrap">
+      <select class="csel" id="purchase-size">
+        <optgroup label="── Kegs ──">
+          <option value="50000">50L Keg</option>
+          <option value="30000">30L Keg</option>
+          <option value="20000">20L Keg</option>
+          <option value="11000">11L Mini Keg</option>
+        </optgroup>
+        <optgroup label="── Wine Bottles ──">
+          <option value="750" selected>750ml Bottle</option>
+          <option value="1500">1.5L Magnum</option>
+          <option value="3000">3L Jeroboam</option>
+          <option value="375">375ml Half Bottle</option>
+        </optgroup>
+        <optgroup label="── Spirits / Other ──">
+          <option value="700">700ml Bottle</option>
+          <option value="1000">1L Bottle</option>
+          <option value="1750">1.75L Handle</option>
+          <option value="500">500ml Bottle</option>
+          <option value="200">200ml Miniature</option>
+        </optgroup>
+        <optgroup label="── Beer / Cider ──">
+          <option value="330">330ml Can/Bottle</option>
+          <option value="440">440ml Can</option>
+        </optgroup>
+        <optgroup label="── Custom ──">
+          <option value="custom">Custom size…</option>
+        </optgroup>
+      </select>
+      <span class="sarr">▼</span>
+    </div>
+  </div>
+  <div class="cml-row" id="cp-row">
+    <label>Custom size (ml)</label>
+    <div class="num-wrap"><input type="number" id="custom-p-ml" value="1000" min="1"/><span class="sfx">ml</span></div>
+  </div>
+  <div class="field">
+    <div class="fi"><div class="fl">Cost price</div><div class="fh">What you pay per unit</div></div>
+    <div class="num-wrap"><span class="pfx">£</span><input type="number" id="cost-price" value="8.00" min="0" step="0.01"/></div>
+  </div>
+</div>
+
+<!-- SELLING -->
+<div class="sec-lbl a" style="animation-delay:.18s">🥂 &nbsp;Selling</div>
+<div class="card a" style="animation-delay:.2s">
+  <div class="field">
+    <div class="fi"><div class="fl">Serve size</div><div class="fh">What you sell</div></div>
+    <div class="sel-wrap">
+      <select class="csel" id="sell-size">
+        <optgroup label="── Beer / Cider ──">
+          <option value="568">Pint (568ml)</option>
+          <option value="284">Half Pint (284ml)</option>
+          <option value="330">330ml Bottle/Can</option>
+          <option value="440">440ml Can</option>
+          <option value="500">500ml Bottle</option>
+        </optgroup>
+        <optgroup label="── Wine ──">
+          <option value="175" selected>175ml Glass</option>
+          <option value="250">250ml Large Glass</option>
+          <option value="125">125ml Small Glass</option>
+          <option value="750">Whole Bottle (750ml)</option>
+        </optgroup>
+        <optgroup label="── Spirits — Singles ──">
+          <option value="25">25ml Shot</option>
+          <option value="35">35ml Shot</option>
+        </optgroup>
+        <optgroup label="── Spirits — Doubles ──">
+          <option value="50">50ml Double</option>
+          <option value="70">70ml Double</option>
+        </optgroup>
+        <optgroup label="── Spirits — Bottle ──">
+          <option value="700">700ml Bottle</option>
+        </optgroup>
+        <optgroup label="── Custom ──">
+          <option value="custom">Custom size…</option>
+        </optgroup>
+      </select>
+      <span class="sarr">▼</span>
+    </div>
+  </div>
+  <div class="cml-row" id="cs-row">
+    <label>Custom serve (ml)</label>
+    <div class="num-wrap"><input type="number" id="custom-s-ml" value="200" min="1"/><span class="sfx">ml</span></div>
+  </div>
+  <div class="sl-field">
+    <div class="sl-top">
+      <span class="sl-lbl">Target GP %</span>
+      <span class="sl-val" id="gp-display">70.0%</span>
+    </div>
+    <input type="range" id="gp-slider" min="10" max="95" value="70" step="0.5"/>
+    <div class="sl-ticks"><span>10%</span><span>30%</span><span>50%</span><span>70%</span><span>95%</span></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="sec-lbl a" style="animation-delay:.26s">✦ &nbsp;Results</div>
+<div class="rh a" style="animation-delay:.28s">
+  <div class="rh-inner">
+    <div class="rh-drink" id="r-name">House Red Wine</div>
+    <div class="rh-eq" id="r-eq">750ml bottle → 175ml glass</div>
+    <div class="rh-lbl">Min. Selling Price (ex VAT)</div>
+    <div class="rh-price" id="r-price">£0.00</div>
+    <div class="rh-ex" id="r-vat">£0.00 inc. 20% VAT</div>
+  </div>
+  <div class="rh-grid">
+    <div class="rh-cell"><div class="rh-cl">Portions</div><div class="rh-cv gold" id="r-portions">0.00</div></div>
+    <div class="rh-cell"><div class="rh-cl">Cost / serve</div><div class="rh-cv" id="r-cost">£0.000</div></div>
+    <div class="rh-cell"><div class="rh-cl">GP / serve</div><div class="rh-cv green" id="r-gp">£0.00</div></div>
+  </div>
+</div>
+
+<!-- PRICE CHECKER -->
+<div class="sec-lbl a" style="animation-delay:.34s">🔍 &nbsp;Price Checker</div>
+<div class="ck a" style="animation-delay:.36s">
+  <div class="field">
+    <div class="fi"><div class="fl">Your selling price</div><div class="fh" id="checker-hint">Enter price ex VAT</div></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+      <div class="num-wrap"><span class="pfx">£</span><input type="number" id="actual-price" value="5.50" min="0" step="0.01"/></div>
+      <div class="vat-toggle">
+        <button id="btn-exvat" class="active">Ex VAT</button>
+        <button id="btn-incvat">Inc VAT</button>
+      </div>
+    </div>
+  </div>
+  <div id="converted-row" style="display:none;padding:0 18px 14px;justify-content:space-between;align-items:center;">
+    <span style="font-size:12px;color:var(--text-dim)" id="converted-lbl">Inc VAT equivalent</span>
+    <span style="font-size:14px;font-weight:700;color:var(--text-dim)" id="converted-val">£0.00</span>
+  </div>
+  <div class="bar-wrap" style="border-top:1px solid var(--border);padding-top:14px;">
+    <div class="bar-top">
+      <span class="bar-lbl">Actual GP</span>
+      <span class="bar-pct" id="bar-pct">0.0%</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" id="bar-fill" style="width:0%"></div>
+      <div class="bar-target" id="bar-tgt" style="left:63%"></div>
+    </div>
+    <div class="bar-lbls"><span>0%</span><span id="tgt-lbl" style="color:var(--gold)">▲ 70% target</span><span>100%</span></div>
+  </div>
+  <div class="spill neutral" id="spill">Enter a price above to check your GP</div>
+</div>
+
+<!-- PRINT BUTTON -->
+<div style="margin:16px 16px 4px;">
+  <button id="print-btn" class="print-btn" onclick="doPrint()">
+    🖨 &nbsp; Print / Save as PDF
+  </button>
+</div>
+
+<!-- SETTINGS -->
+<div class="settings-wrap a" style="animation-delay:.42s">
+  <button class="settings-toggle" id="settings-toggle">
+    Settings <span class="settings-arr">▼</span>
+  </button>
+  <div class="settings-body" id="settings-body">
+    <div class="settings-row">
+      <div class="fi">
+        <div class="fl">VAT Rate</div>
+        <div class="fh">Applied to all inc VAT calculations</div>
+      </div>
+      <div class="num-wrap" style="min-width:100px;">
+        <input type="number" id="vat-rate" value="20" min="0" max="100" step="0.1" style="width:55px;"/>
+        <span class="sfx">%</span>
+      </div>
+    </div>
+    <div class="settings-note">UK standard rate is 20%. Reduced rate is 5%.</div>
+  </div>
+</div>
+
+<footer>Drinks GP Calculator · Works offline · 🍺🍷🥃<br>Created by Stuart Fisher</footer>
+
+</div><!-- end .app -->
+
+<!-- PRINT SHEET (hidden, shown only when printing) -->
+<div id="print-sheet">
+  <div id="ps-inner">
+    <div class="ps-hdr">
+      <div>
+        <div class="ps-title">🍷 Drinks GP Calculator</div>
+        <div class="ps-sub">Gross Profit Analysis</div>
+      </div>
+      <div class="ps-meta" id="ps-meta"></div>
+    </div>
+    <div class="ps-name" id="ps-name"></div>
+    <div class="ps-eq" id="ps-eq"></div>
+    <div class="ps-sec">Purchase Details</div>
+    <table class="ps-tbl"><tbody id="ps-purchase"></tbody></table>
+    <div class="ps-sec">Minimum Selling Price</div>
+    <div class="ps-hero">
+      <div class="ps-hero-lbl">Min. Selling Price (ex VAT)</div>
+      <div class="ps-hero-price" id="ps-price"></div>
+      <div class="ps-hero-sub" id="ps-vat"></div>
+    </div>
+    <div class="ps-3col">
+      <div class="ps-3cell"><div class="ps-3lbl">Portions</div><div class="ps-3val" id="ps-portions"></div></div>
+      <div class="ps-3cell"><div class="ps-3lbl">Cost / serve</div><div class="ps-3val" id="ps-cost"></div></div>
+      <div class="ps-3cell"><div class="ps-3lbl">GP / serve</div><div class="ps-3val" id="ps-gp"></div></div>
+    </div>
+    <div class="ps-sec">Price Check</div>
+    <table class="ps-tbl"><tbody id="ps-checker"></tbody></table>
+    <div class="ps-status na" id="ps-status"></div>
+    <div class="ps-ftr">
+      <span>Created by Stuart Fisher</span>
+      <span>Drinks GP Calculator</span>
+    </div>
+  </div>
+</div>
+
+<script>
+var vatMode = 'ex';
+var PL = {50000:'50L Keg',30000:'30L Keg',20000:'20L Keg',11000:'11L Mini Keg',750:'750ml Bottle',1500:'1.5L Magnum',3000:'3L Jeroboam',375:'375ml Half Bottle',700:'700ml Bottle',1000:'1L Bottle',1750:'1.75L Handle',500:'500ml Bottle',200:'200ml Mini',330:'330ml Can/Bottle',440:'440ml Can'};
+var SL = {568:'Pint',284:'Half Pint',330:'330ml',440:'440ml Can',500:'500ml',175:'175ml Glass',250:'250ml Glass',125:'125ml Glass',750:'750ml Bottle',25:'25ml Shot',35:'35ml Shot',50:'50ml Double',70:'70ml Double',700:'700ml Bottle'};
+
+function gv(id){ return document.getElementById(id); }
+function getVr(){ return (parseFloat(gv('vat-rate').value)||0)/100; }
+function getPml(){ var v=gv('purchase-size').value; return v==='custom'?parseFloat(gv('custom-p-ml').value)||0:parseFloat(v)||0; }
+function getSml(){ var v=gv('sell-size').value; return v==='custom'?parseFloat(gv('custom-s-ml').value)||0:parseFloat(v)||0; }
+function getPlbl(){ var v=gv('purchase-size').value; return v==='custom'?(gv('custom-p-ml').value||'?')+'ml':PL[v]||v+'ml'; }
+function getSlbl(){ var v=gv('sell-size').value; return v==='custom'?(gv('custom-s-ml').value||'?')+'ml':SL[v]||v+'ml'; }
+function fmt(n,d){ d=d||2; return '£'+(isNaN(n)||!isFinite(n)?'0.00':n.toFixed(d)); }
+
+function calc(){
+  var pml=getPml(), sml=getSml();
+  var cost=parseFloat(gv('cost-price').value)||0;
+  var gpt=parseFloat(gv('gp-slider').value)||0;
+  var entered=parseFloat(gv('actual-price').value)||0;
+  var name=gv('drink-name').value||'Drink';
+  var vr=getVr();
+  var vatPct=Math.round(vr*100);
+  var portions=sml>0?pml/sml:0;
+  var cps=portions>0?cost/portions:0;
+  var minEx=gpt<100&&cps>0?cps/(1-gpt/100):0;
+  var minInc=minEx*(1+vr);
+  var gpServe=minEx-cps;
+
+  gv('r-name').textContent=name;
+  gv('r-eq').textContent=getPlbl()+' → '+getSlbl();
+  gv('r-price').textContent=fmt(minEx);
+  gv('r-vat').textContent=fmt(minInc)+' inc. '+vatPct+'% VAT';
+  gv('r-portions').textContent=portions.toFixed(2);
+  gv('r-cost').textContent=fmt(cps,3);
+  gv('r-gp').textContent=fmt(gpServe);
+
+  var priceEx=vatMode==='inc'?entered/(1+vr):entered;
+  var priceInc=vatMode==='inc'?entered:entered*(1+vr);
+  var crow=gv('converted-row');
+  if(entered>0){
+    crow.style.display='flex';
+    if(vatMode==='inc'){
+      gv('converted-lbl').textContent='Ex VAT equivalent (used for GP)';
+      gv('converted-val').textContent=fmt(priceEx);
+    } else {
+      gv('converted-lbl').textContent='Inc VAT ('+vatPct+'%) equivalent';
+      gv('converted-val').textContent=fmt(priceInc);
+    }
+  } else { crow.style.display='none'; }
+
+  var agp=priceEx>0&&cps>0?(priceEx-cps)/priceEx*100:0;
+  var clamp=Math.max(0,Math.min(100,agp));
+  var bf=gv('bar-fill');
+  bf.style.width=clamp+'%';
+  bf.style.background=agp>=gpt?'linear-gradient(90deg,#16a34a,#4ade80)':'linear-gradient(90deg,#dc2626,#f87171)';
+  gv('bar-tgt').style.left=Math.min(gpt,100)+'%';
+  gv('tgt-lbl').textContent='▲ '+gpt.toFixed(1)+'% target';
+  var bp=gv('bar-pct');
+  bp.textContent=agp.toFixed(1)+'%';
+  bp.style.color=agp>=gpt?'var(--green)':entered>0?'var(--red)':'var(--text-dim)';
+  var sp=gv('spill');
+  if(!entered){ sp.textContent='Enter a price above to check your GP'; sp.className='spill neutral'; }
+  else if(agp>=gpt){ sp.textContent='✅ Target met — '+(agp-gpt).toFixed(1)+'% above target'; sp.className='spill good'; }
+  else { sp.textContent='❌ Below target — '+(gpt-agp).toFixed(1)+'% short'; sp.className='spill bad'; }
+}
+
+function doPrint(){
+  var pml=getPml(), sml=getSml();
+  var cost=parseFloat(gv('cost-price').value)||0;
+  var gpt=parseFloat(gv('gp-slider').value)||0;
+  var entered=parseFloat(gv('actual-price').value)||0;
+  var name=gv('drink-name').value||'Drink';
+  var vr=getVr();
+  var vatPct=Math.round(vr*100);
+  var portions=sml>0?pml/sml:0;
+  var cps=portions>0?cost/portions:0;
+  var minEx=gpt<100&&cps>0?cps/(1-gpt/100):0;
+  var minInc=minEx*(1+vr);
+  var gpServe=minEx-cps;
+  var priceEx=vatMode==='inc'?entered/(1+vr):entered;
+  var priceInc=vatMode==='inc'?entered:entered*(1+vr);
+  var agp=priceEx>0&&cps>0?(priceEx-cps)/priceEx*100:0;
+  var date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  gv('ps-meta').innerHTML='Date: '+date+'<br>Target GP: '+gpt.toFixed(1)+'%&nbsp;&nbsp;|&nbsp;&nbsp;VAT: '+vatPct+'%';
+  gv('ps-name').textContent=name;
+  gv('ps-eq').textContent=getPlbl()+' → '+getSlbl();
+  gv('ps-purchase').innerHTML=
+    '<tr><td>Container</td><td>'+getPlbl()+'</td></tr>'+
+    '<tr><td>Cost price</td><td>'+fmt(cost)+'</td></tr>'+
+    '<tr><td>Serve size</td><td>'+getSlbl()+'</td></tr>'+
+    '<tr><td>Cost per ml</td><td>'+fmt(pml>0?cost/pml:0,4)+'/ml</td></tr>';
+  gv('ps-price').textContent=fmt(minEx);
+  gv('ps-vat').textContent=fmt(minInc)+' inc. '+vatPct+'% VAT';
+  gv('ps-portions').textContent=portions.toFixed(2);
+  gv('ps-cost').textContent=fmt(cps,3);
+  gv('ps-gp').textContent=fmt(gpServe);
+
+  var rows='<tr><td>Selling price entered ('+vatMode+' VAT)</td><td>'+fmt(entered)+'</td></tr>';
+  if(entered>0){
+    rows+=vatMode==='inc'
+      ?'<tr><td>Ex VAT equivalent</td><td>'+fmt(priceEx)+'</td></tr>'
+      :'<tr><td>Inc VAT equivalent</td><td>'+fmt(priceInc)+'</td></tr>';
+    rows+='<tr><td>Actual GP %</td><td>'+agp.toFixed(1)+'%</td></tr>'+
+          '<tr><td>Target GP %</td><td>'+gpt.toFixed(1)+'%</td></tr>'+
+          '<tr><td>Variance</td><td>'+(agp>=gpt?'+':'')+( agp-gpt).toFixed(1)+'%</td></tr>';
+  }
+  gv('ps-checker').innerHTML=rows;
+
+  var st=gv('ps-status');
+  if(!entered){ st.textContent='No price entered'; st.className='ps-status na'; }
+  else if(agp>=gpt){ st.textContent='✅ Target met — '+(agp-gpt).toFixed(1)+'% above target'; st.className='ps-status good'; }
+  else { st.textContent='❌ Below target — '+(gpt-agp).toFixed(1)+'% short'; st.className='ps-status bad'; }
+
+  window.print();
+}
+
+// Wire up all events after DOM ready
+gv('print-btn').addEventListener('click', doPrint);
+
+gv('btn-exvat').addEventListener('click', function(){
+  vatMode='ex';
+  gv('btn-exvat').classList.add('active');
+  gv('btn-incvat').classList.remove('active');
+  gv('checker-hint').textContent='Enter price ex VAT';
+  calc();
+});
+gv('btn-incvat').addEventListener('click', function(){
+  vatMode='inc';
+  gv('btn-incvat').classList.add('active');
+  gv('btn-exvat').classList.remove('active');
+  gv('checker-hint').textContent='Enter price inc VAT';
+  calc();
+});
+
+gv('settings-toggle').addEventListener('click', function(){
+  this.classList.toggle('open');
+  gv('settings-body').classList.toggle('open');
+});
+
+var sl=gv('gp-slider');
+sl.addEventListener('input', function(){
+  var v=parseFloat(this.value);
+  gv('gp-display').textContent=v.toFixed(1)+'%';
+  this.style.setProperty('--pct',((v-10)/85*100).toFixed(1)+'%');
+  calc();
+});
+sl.style.setProperty('--pct',((parseFloat(sl.value)-10)/85*100).toFixed(1)+'%');
+
+gv('purchase-size').addEventListener('change', function(){ gv('cp-row').classList.toggle('on',this.value==='custom'); calc(); });
+gv('sell-size').addEventListener('change', function(){ gv('cs-row').classList.toggle('on',this.value==='custom'); calc(); });
+['cost-price','actual-price','custom-p-ml','custom-s-ml','drink-name','vat-rate'].forEach(function(id){
+  gv(id).addEventListener('input', calc);
+});
+
+calc();
+
+if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone)
+  gv('ios-hint').style.display='block';
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
