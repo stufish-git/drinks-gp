@@ -151,12 +151,13 @@
 <div class="card a" style="animation-delay:.12s">
   <div class="field">
     <div class="fi"><div class="fl">Drink name</div></div>
-    <input type="text" id="drink-name" value="House Red Wine"/>
+    <input type="text" id="drink-name" value="" placeholder="e.g. House Red Wine"/>
   </div>
   <div class="field">
     <div class="fi"><div class="fl">Container</div><div class="fh">What you buy</div></div>
     <div class="sel-wrap">
       <select class="csel" id="purchase-size">
+          <option value="" disabled selected>Select container…</option>
         <optgroup label="── Kegs ──">
           <option value="50000">50L Keg</option>
           <option value="30000">30L Keg</option>
@@ -164,7 +165,7 @@
           <option value="11000">11L Mini Keg</option>
         </optgroup>
         <optgroup label="── Wine Bottles ──">
-          <option value="750" selected>750ml Bottle</option>
+          <option value="750">750ml Bottle</option>
           <option value="1500">1.5L Magnum</option>
           <option value="3000">3L Jeroboam</option>
           <option value="375">375ml Half Bottle</option>
@@ -193,7 +194,7 @@
   </div>
   <div class="field">
     <div class="fi"><div class="fl">Cost price</div><div class="fh">What you pay per unit</div></div>
-    <div class="num-wrap"><span class="pfx">£</span><input type="number" id="cost-price" value="8.00" min="0" step="0.01"/></div>
+    <div class="num-wrap"><span class="pfx">£</span><input type="number" id="cost-price" value="" min="0" step="0.01" placeholder="0.00"/></div>
   </div>
 </div>
 
@@ -204,6 +205,7 @@
     <div class="fi"><div class="fl">Serve size</div><div class="fh">What you sell</div></div>
     <div class="sel-wrap">
       <select class="csel" id="sell-size">
+        <option value="" disabled selected>Select serve size…</option>
         <optgroup label="── Beer / Cider ──">
           <option value="568">Pint (568ml)</option>
           <option value="284">Half Pint (284ml)</option>
@@ -212,7 +214,7 @@
           <option value="500">500ml Bottle</option>
         </optgroup>
         <optgroup label="── Wine ──">
-          <option value="175" selected>175ml Glass</option>
+          <option value="175">175ml Glass</option>
           <option value="250">250ml Large Glass</option>
           <option value="125">125ml Small Glass</option>
           <option value="750">Whole Bottle (750ml)</option>
@@ -272,7 +274,7 @@
   <div class="field">
     <div class="fi"><div class="fl">Your selling price</div><div class="fh" id="checker-hint">Enter price ex VAT</div></div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-      <div class="num-wrap"><span class="pfx">£</span><input type="number" id="actual-price" value="5.50" min="0" step="0.01"/></div>
+      <div class="num-wrap"><span class="pfx">£</span><input type="number" id="actual-price" value="" min="0" step="0.01" placeholder="0.00"/></div>
       <div class="vat-toggle">
         <button id="btn-exvat" class="active">Ex VAT</button>
         <button id="btn-incvat">Inc VAT</button>
