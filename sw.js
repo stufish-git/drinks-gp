@@ -1,8 +1,12 @@
 const CACHE = 'drinks-gp-v7';
-const ASSETS = ['/index.html'];
+
+// Use relative path so it works on any subdirectory (e.g. GitHub Pages)
+const ASSETS = ['./index.html'];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  e.waitUntil(
+    caches.open(CACHE).then(c => c.addAll(ASSETS))
+  );
   self.skipWaiting();
 });
 
