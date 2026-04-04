@@ -15,6 +15,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
   <style>
     :root{--bg:#0f0e17;--surface:#1a1826;--gold:#e8a838;--gold-light:#f5c96a;--green:#4ade80;--green-dim:rgba(74,222,128,0.1);--red:#f87171;--red-dim:rgba(248,113,113,0.1);--text:#f0ece4;--text-dim:#7a7590;--border:rgba(255,255,255,0.06);--border-gold:rgba(232,168,56,0.22);--radius:18px;--radius-sm:12px;}
+    body.light{--bg:#f5f1eb;--surface:#ffffff;--gold:#b07820;--gold-light:#a06010;--green:#16a34a;--green-dim:rgba(22,163,74,0.1);--red:#dc2626;--red-dim:rgba(220,38,38,0.1);--text:#2a2520;--text-dim:#9a8878;--border:rgba(0,0,0,0.07);--border-gold:rgba(176,120,32,0.3);--radius:18px;--radius-sm:12px;}
+    body.light .b1{background:radial-gradient(circle,rgba(176,120,32,0.08),transparent 70%);}
+    body.light .b2{background:radial-gradient(circle,rgba(150,100,50,0.05),transparent 70%);}
+    body.light .rh{background:linear-gradient(145deg,#fff,#fdf8f0);}
+    body.light .rh::before{background:radial-gradient(ellipse at 50% -20%,rgba(176,120,32,0.08),transparent 60%);}
+    body.light input[type="range"]{background:linear-gradient(90deg,var(--gold) 0%,var(--gold) var(--pct,63%),rgba(0,0,0,.1) var(--pct,63%));}
+    body.light .csel option{background:#fff;color:#2a2520;}
+    body.light .csel optgroup{background:#f5f1eb;color:#b07820;}
+    body.light .bar-track{background:rgba(0,0,0,.08);}
+    body.light .spill.neutral{background:rgba(0,0,0,.04);}
+    body.light .settings-body,.light .card,.light .ck{box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    /* Theme toggle button */
+    .theme-btn{position:absolute;top:0;right:0;display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:7px 13px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+    body.light .theme-btn{background:rgba(0,0,0,0.06);border-color:rgba(0,0,0,0.12);}
+    .theme-btn:active{transform:scale(0.96);}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
     html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overscroll-behavior:none;}
     .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(70px);}
@@ -138,8 +153,9 @@
 <div class="blob b1"></div><div class="blob b2"></div>
 <div class="app">
 
-<header>
+<header style="position:relative;">
   <div class="eyebrow">Hospitality Tools</div>
+  <button class="theme-btn" id="theme-btn">☀️ Light</button>
   <h1>Drinks GP<br>Calculator</h1>
   <p class="header-sub">Kegs, bottles, glasses — every serve, every margin.</p>
 </header>
@@ -258,9 +274,9 @@
   <div class="rh-inner">
     <div class="rh-drink" id="r-name">House Red Wine</div>
     <div class="rh-eq" id="r-eq">750ml bottle → 175ml glass</div>
-    <div class="rh-lbl">Min. Selling Price (ex VAT)</div>
+    <div class="rh-lbl">Min. Selling Price (inc VAT)</div>
     <div class="rh-price" id="r-price">£0.00</div>
-    <div class="rh-ex" id="r-vat">£0.00 inc. 20% VAT</div>
+    <div class="rh-ex" id="r-vat">£0.00 ex. VAT</div>
   </div>
   <div class="rh-grid">
     <div class="rh-cell"><div class="rh-cl">Portions</div><div class="rh-cv gold" id="r-portions">0.00</div></div>
@@ -327,7 +343,7 @@
   </div>
 </div>
 
-<footer>Drinks GP Calculator · Works offline · 🍺🍷🥃<br>Created by Stuart Fisher</footer>
+<footer>Drinks GP Calculator · Works offline · 🍺🍷🥃<br>Created by Stuart Fisher · v6</footer>
 
 </div><!-- end .app -->
 
@@ -347,7 +363,7 @@
     <table class="ps-tbl"><tbody id="ps-purchase"></tbody></table>
     <div class="ps-sec">Minimum Selling Price</div>
     <div class="ps-hero">
-      <div class="ps-hero-lbl">Min. Selling Price (ex VAT)</div>
+      <div class="ps-hero-lbl">Min. Selling Price (inc VAT)</div>
       <div class="ps-hero-price" id="ps-price"></div>
       <div class="ps-hero-sub" id="ps-vat"></div>
     </div>
@@ -408,8 +424,8 @@ function calc(){
 
   gv('r-name').textContent=name;
   gv('r-eq').textContent=getPlbl()+' → '+getSlbl();
-  gv('r-price').textContent=fmt(minEx);
-  gv('r-vat').textContent=fmt(minInc)+' inc. '+vatPct+'% VAT';
+  gv('r-price').textContent=fmt(minInc);
+  gv('r-vat').textContent=fmt(minEx)+' ex. VAT';
   gv('r-portions').textContent=portions.toFixed(2);
   gv('r-cost').textContent=fmt(cps,3);
   gv('r-gp').textContent=fmt(gpServe);
@@ -476,8 +492,8 @@ function doPrint(){
     '<tr><td>Cost price</td><td>'+fmt(cost)+'</td></tr>'+
     '<tr><td>Serve size</td><td>'+getSlbl()+'</td></tr>'+
     '<tr><td>Cost per ml</td><td>'+fmt(pml>0?cost/pml:0,4)+'/ml</td></tr>';
-  gv('ps-price').textContent=fmt(minEx);
-  gv('ps-vat').textContent=fmt(minInc)+' inc. '+vatPct+'% VAT';
+  gv('ps-price').textContent=fmt(minInc);
+  gv('ps-vat').textContent=fmt(minEx)+' ex. VAT';
   gv('ps-portions').textContent=portions.toFixed(2);
   gv('ps-cost').textContent=fmt(cps,3);
   gv('ps-gp').textContent=fmt(gpServe);
@@ -555,6 +571,27 @@ gv('sell-size').addEventListener('change', function(){ gv('cs-row').classList.to
 });
 
 calc();
+
+// ── Theme toggle ──
+function applyTheme(mode){
+  if(mode==='light'){
+    document.body.classList.add('light');
+    gv('theme-btn').textContent='🌙 Dark';
+  } else {
+    document.body.classList.remove('light');
+    gv('theme-btn').textContent='☀️ Light';
+  }
+  try{ localStorage.setItem('gpTheme', mode); }catch(e){}
+}
+gv('theme-btn').addEventListener('click', function(){
+  var isLight = document.body.classList.contains('light');
+  applyTheme(isLight ? 'dark' : 'light');
+});
+// Load saved preference
+try{
+  var saved = localStorage.getItem('gpTheme');
+  if(saved) applyTheme(saved);
+}catch(e){}
 
 if(/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.navigator.standalone)
   gv('ios-hint').style.display='block';
