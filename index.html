@@ -17,14 +17,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
   <style>
     :root{--bg:#0f0e17;--surface:#1a1826;--gold:#e8a838;--gold-light:#f5c96a;--green:#4ade80;--green-dim:rgba(74,222,128,0.1);--red:#f87171;--red-dim:rgba(248,113,113,0.1);--text:#f0ece4;--text-dim:#7a7590;--border:rgba(255,255,255,0.06);--border-gold:rgba(232,168,56,0.22);--radius:18px;--radius-sm:12px;}
-    body.light{--bg:#e8ecf2;--surface:#ffffff;--gold:#e8a838;--gold-light:#f5c96a;--green:#16a34a;--green-dim:rgba(22,163,74,0.1);--red:#dc2626;--red-dim:rgba(220,38,38,0.1);--text:#1a2744;--text-dim:#4a6080;--border:rgba(26,39,68,0.09);--border-gold:rgba(232,168,56,0.35);--radius:18px;--radius-sm:12px;}
+    html.light,body.light{--bg:#e8ecf2;--surface:#ffffff;--gold:#e8a838;--gold-light:#f5c96a;--green:#16a34a;--green-dim:rgba(22,163,74,0.1);--red:#dc2626;--red-dim:rgba(220,38,38,0.1);--text:#1a2744;--text-dim:#4a6080;--border:rgba(26,39,68,0.09);--border-gold:rgba(232,168,56,0.35);--radius:18px;--radius-sm:12px;}
     /* Fix black overscroll in light mode */
     body.light{background-color:#e8ecf2;}
     html{background-color:inherit;}
     body.light .b1{background:radial-gradient(circle,rgba(26,39,68,0.06),transparent 70%);}
     body.light .b2{background:radial-gradient(circle,rgba(26,39,68,0.04),transparent 70%);}
     /* Navy header in light mode */
-    body.light header{background:#1a2744;border-radius:0 0 24px 24px;margin-bottom:8px;padding-bottom:24px;}
+    body.light header{background:#1a2744;border-radius:20px;margin:12px 16px 8px;padding:24px 20px 24px;}
     body.light .eyebrow{opacity:.9;}
     body.light .header-sub{color:rgba(255,255,255,0.4);}
     body.light h1{background:linear-gradient(135deg,#f5c96a 0%,#e8a838 60%,#c07820 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -342,12 +342,12 @@
 <div class="sec-lbl a" style="animation-delay:.34s">🔍 &nbsp;Price Checker</div>
 <div class="ck a" style="animation-delay:.36s">
   <div class="field">
-    <div class="fi"><div class="fl">Your selling price</div><div class="fh" id="checker-hint">Enter price ex VAT</div></div>
+    <div class="fi"><div class="fl">Your selling price</div><div class="fh" id="checker-hint">Enter price inc VAT</div></div>
     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
       <div class="num-wrap"><span class="pfx">£</span><input type="number" id="actual-price" value="" min="0" step="0.01" placeholder="0.00"/></div>
       <div class="vat-toggle">
-        <button id="btn-exvat" class="active">Ex VAT</button>
-        <button id="btn-incvat">Inc VAT</button>
+        <button id="btn-incvat" class="active">Inc VAT</button>
+        <button id="btn-exvat">Ex VAT</button>
       </div>
     </div>
   </div>
@@ -396,7 +396,7 @@
   </div>
 </div>
 
-<footer>Drinks GP Calculator · Works offline · 🍺🍷🥃<br>Created by Stuart Fisher · v7</footer>
+<footer>Drinks GP Calculator · Works offline · 🍺🍷🥃<br>Created by Stuart Fisher · v8</footer>
 
 </div><!-- end .app -->
 
@@ -436,7 +436,7 @@
 </div>
 
 <script>
-var vatMode = 'ex';
+var vatMode = 'inc';
 var PL = {50000:'50L Keg',30000:'30L Keg',20000:'20L Keg',11000:'11L Mini Keg',750:'750ml Bottle',1500:'1.5L Magnum',3000:'3L Jeroboam',375:'375ml Half Bottle',700:'700ml Bottle',1000:'1L Bottle',1750:'1.75L Handle',500:'500ml Bottle',200:'200ml Mini',330:'Single Can/Bottle',7920:'24 x Can/Bottle',3960:'12 x Can/Bottle'};
 var SL = {568:'Pint',284:'Half Pint',330:'330ml',440:'440ml Can',500:'500ml',175:'175ml Glass',250:'250ml Glass',125:'125ml Glass',750:'750ml Bottle',25:'25ml Shot',35:'35ml Shot',50:'50ml Double',70:'70ml Double',700:'700ml Bottle'};
 
@@ -629,10 +629,12 @@ calc();
 function applyTheme(mode){
   if(mode==='light'){
     document.body.classList.add('light');
+    document.documentElement.style.background='#e8ecf2';
     gv('theme-btn').textContent='🌙 Dark';
     document.querySelector('meta[name="theme-color"]').setAttribute('content','#1a2744');
   } else {
     document.body.classList.remove('light');
+    document.documentElement.style.background='#0f0e17';
     gv('theme-btn').textContent='☀️ Light';
     document.querySelector('meta[name="theme-color"]').setAttribute('content','#0f0e17');
   }

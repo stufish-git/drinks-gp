@@ -1,4 +1,4 @@
-const CACHE = 'drinks-gp-v7';
+const CACHE = 'drinks-gp-v8';
 
 // Use relative path so it works on any subdirectory (e.g. GitHub Pages)
 const ASSETS = ['./index.html'];
