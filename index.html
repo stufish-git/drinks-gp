@@ -15,23 +15,74 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
   <style>
     :root{--bg:#0f0e17;--surface:#1a1826;--gold:#e8a838;--gold-light:#f5c96a;--green:#4ade80;--green-dim:rgba(74,222,128,0.1);--red:#f87171;--red-dim:rgba(248,113,113,0.1);--text:#f0ece4;--text-dim:#7a7590;--border:rgba(255,255,255,0.06);--border-gold:rgba(232,168,56,0.22);--radius:18px;--radius-sm:12px;}
-    body.light{--bg:#f5f1eb;--surface:#ffffff;--gold:#b07820;--gold-light:#a06010;--green:#16a34a;--green-dim:rgba(22,163,74,0.1);--red:#dc2626;--red-dim:rgba(220,38,38,0.1);--text:#2a2520;--text-dim:#9a8878;--border:rgba(0,0,0,0.07);--border-gold:rgba(176,120,32,0.3);--radius:18px;--radius-sm:12px;}
-    body.light .b1{background:radial-gradient(circle,rgba(176,120,32,0.08),transparent 70%);}
-    body.light .b2{background:radial-gradient(circle,rgba(150,100,50,0.05),transparent 70%);}
-    body.light .rh{background:linear-gradient(145deg,#fff,#fdf8f0);}
-    body.light .rh::before{background:radial-gradient(ellipse at 50% -20%,rgba(176,120,32,0.08),transparent 60%);}
-    body.light input[type="range"]{background:linear-gradient(90deg,var(--gold) 0%,var(--gold) var(--pct,63%),rgba(0,0,0,.1) var(--pct,63%));}
-    body.light .csel option{background:#fff;color:#2a2520;}
-    body.light .csel optgroup{background:#f5f1eb;color:#b07820;}
-    body.light .bar-track{background:rgba(0,0,0,.08);}
-    body.light .spill.neutral{background:rgba(0,0,0,.04);}
-    body.light .settings-body,.light .card,.light .ck{box-shadow:0 2px 8px rgba(0,0,0,.06);}
+    body.light{--bg:#e8ecf2;--surface:#ffffff;--gold:#e8a838;--gold-light:#f5c96a;--green:#16a34a;--green-dim:rgba(22,163,74,0.1);--red:#dc2626;--red-dim:rgba(220,38,38,0.1);--text:#1a2744;--text-dim:#4a6080;--border:rgba(26,39,68,0.09);--border-gold:rgba(232,168,56,0.35);--radius:18px;--radius-sm:12px;}
+    /* Fix black overscroll in light mode */
+    body.light{background-color:#e8ecf2;}
+    html{background-color:inherit;}
+    body.light .b1{background:radial-gradient(circle,rgba(26,39,68,0.06),transparent 70%);}
+    body.light .b2{background:radial-gradient(circle,rgba(26,39,68,0.04),transparent 70%);}
+    /* Navy header in light mode */
+    body.light header{background:#1a2744;border-radius:0 0 24px 24px;margin-bottom:8px;padding-bottom:24px;}
+    body.light .eyebrow{opacity:.9;}
+    body.light .header-sub{color:rgba(255,255,255,0.4);}
+    body.light h1{background:linear-gradient(135deg,#f5c96a 0%,#e8a838 60%,#c07820 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    /* Theme button in navy header */
+    body.light .theme-btn{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);}
+    /* Cards */
+    body.light .card,.body.light .ck,.body.light .settings-body{box-shadow:0 2px 10px rgba(26,39,68,0.08);}
+    body.light .sec-lbl{color:#4a6080;}
+    body.light .sec-lbl::after{background:rgba(26,39,68,0.12);}
+    /* Results hero stays navy */
+    body.light .rh{background:linear-gradient(145deg,#1a2744,#243560);}
+    body.light .rh::before{background:radial-gradient(ellipse at 50% -20%,rgba(232,168,56,0.12),transparent 60%);}
+    body.light .rh-drink{color:#e8a838;}
+    body.light .rh-eq{color:rgba(255,255,255,0.45);}
+    body.light .rh-lbl{color:rgba(255,255,255,0.45);}
+    body.light .rh-price{color:#f5c96a;}
+    body.light .rh-ex{color:rgba(255,255,255,0.45);}
+    body.light .rh-grid{border-top:1px solid rgba(255,255,255,0.1);}
+    body.light .rh-cell{border-right:1px solid rgba(255,255,255,0.1);}
+    body.light .rh-cl{color:rgba(255,255,255,0.45);}
+    body.light .rh-cv{color:#fff;}
+    body.light .rh-cv.gold{color:#f5c96a;}
+    body.light .rh-cv.green{color:#4ade80;}
+    /* Inputs */
+    body.light input[type="range"]{background:linear-gradient(90deg,var(--gold) 0%,var(--gold) var(--pct,63%),rgba(26,39,68,.15) var(--pct,63%));}
+    body.light input[type="number"]{color:#1a2744;}
+    body.light input[type="text"]{background:#f0f4fa;color:#1a2744;}
+    body.light .csel{background:#f0f4fa;color:#1a2744;}
+    body.light .csel option{background:#fff;color:#1a2744;}
+    body.light .csel optgroup{background:#e8ecf2;color:#1a2744;}
+    body.light .num-wrap{background:#f0f4fa;}
+    body.light .pfx,.body.light .sfx{background:rgba(232,168,56,0.12);}
+    /* Bars & misc */
+    body.light .bar-track{background:rgba(26,39,68,.1);}
+    body.light .bar-target{background:#1a2744;}
+    body.light .bar-lbl{color:#4a6080;}
+    body.light .bar-lbls{color:#4a6080;}
+    body.light #tgt-lbl{color:#1a2744 !important;}
+    body.light .spill.neutral{background:rgba(26,39,68,.05);color:#4a6080;border-color:rgba(26,39,68,.1);}
+    body.light .vat-toggle{background:#f0f4fa;border-color:rgba(232,168,56,0.35);}
+    body.light .vat-toggle button{color:#4a6080;}
+    body.light .print-btn{background:linear-gradient(135deg,rgba(26,39,68,0.08),rgba(26,39,68,0.04));border-color:rgba(26,39,68,0.2);color:#1a2744;}
+    body.light .settings-toggle{color:#4a6080;}
+    body.light .settings-toggle::after{background:rgba(26,39,68,.12);}
+    body.light .settings-body{box-shadow:0 2px 10px rgba(26,39,68,0.08);}
+    body.light .settings-note{color:#4a6080;}
+    body.light .sl-val{color:#1a2744;}
+    body.light .fl{color:#1a2744;}
+    body.light .fh{color:#4a6080;}
+    body.light footer{color:#4a6080;}
+    body.light #ios-hint{background:rgba(26,39,68,0.05);border-color:rgba(26,39,68,0.1);color:#4a6080;}
+    body.light #converted-lbl{color:#4a6080 !important;}
+    body.light #converted-val{color:#1a2744 !important;}
     /* Theme toggle button */
     .theme-btn{position:absolute;top:0;right:0;display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:7px 13px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all .2s;}
     body.light .theme-btn{background:rgba(0,0,0,0.06);border-color:rgba(0,0,0,0.12);}
     .theme-btn:active{transform:scale(0.96);}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-    html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overscroll-behavior:none;}
+    html{height:100%;background:var(--bg);overscroll-behavior:none;}
+    body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overscroll-behavior:none;transition:background .3s;}
     .blob{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(70px);}
     .b1{top:-10%;left:-10%;width:55vw;height:55vw;background:radial-gradient(circle,rgba(232,168,56,0.07),transparent 70%);}
     .b2{bottom:-15%;right:-10%;width:65vw;height:65vw;background:radial-gradient(circle,rgba(100,60,180,0.06),transparent 70%);}
@@ -343,7 +394,7 @@
   </div>
 </div>
 
-<footer>Drinks GP Calculator · Works offline · 🍺🍷🥃<br>Created by Stuart Fisher · v6</footer>
+<footer>Drinks GP Calculator · Works offline · 🍺🍷🥃<br>Created by Stuart Fisher · v7</footer>
 
 </div><!-- end .app -->
 
@@ -577,9 +628,11 @@ function applyTheme(mode){
   if(mode==='light'){
     document.body.classList.add('light');
     gv('theme-btn').textContent='🌙 Dark';
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#1a2744');
   } else {
     document.body.classList.remove('light');
     gv('theme-btn').textContent='☀️ Light';
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#0f0e17');
   }
   try{ localStorage.setItem('gpTheme', mode); }catch(e){}
 }

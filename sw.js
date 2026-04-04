@@ -1,4 +1,4 @@
-const CACHE = 'drinks-gp-v6';
+const CACHE = 'drinks-gp-v7';
 const ASSETS = ['/index.html'];
 
 self.addEventListener('install', e => {
