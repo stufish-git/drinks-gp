@@ -358,7 +358,10 @@
   <div class="bar-wrap" style="border-top:1px solid var(--border);padding-top:14px;">
     <div class="bar-top">
       <span class="bar-lbl">Actual GP</span>
-      <span class="bar-pct" id="bar-pct">0.0%</span>
+      <div style="display:flex;align-items:baseline;gap:10px;">
+        <span style="font-size:14px;font-weight:700;color:var(--text-dim)" id="actual-gp-pounds">£0.00</span>
+        <span class="bar-pct" id="bar-pct">0.0%</span>
+      </div>
     </div>
     <div class="bar-track">
       <div class="bar-fill" id="bar-fill" style="width:0%"></div>
@@ -501,10 +504,14 @@ function calc(){
   var agpR=Math.round(agp*10)/10;
   var gptR=Math.round(gpt*10)/10;
   var met=agpR>=gptR;
+  var gpPounds=priceEx>0?priceEx-cps:0;
   var clamp=Math.max(0,Math.min(100,agp));
   var bf=gv('bar-fill');
   bf.style.width=clamp+'%';
   bf.style.background=met?'linear-gradient(90deg,#16a34a,#4ade80)':'linear-gradient(90deg,#dc2626,#f87171)';
+  var gpPoundsEl=gv('actual-gp-pounds');
+  gpPoundsEl.textContent=entered>0?fmt(gpPounds):'£—';
+  gpPoundsEl.style.color=met?'var(--green)':entered>0?'var(--red)':'var(--text-dim)';
   gv('bar-tgt').style.left=Math.min(gpt,100)+'%';
   gv('tgt-lbl').textContent='▲ '+gpt.toFixed(1)+'% target';
   var bp=gv('bar-pct');
